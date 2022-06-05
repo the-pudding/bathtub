@@ -4,8 +4,23 @@ import loadData from './load-data';
 function resize() { }
 
 function init() {
-	console.log('Make something!');
-  let tubData = {};
+  let margin = {
+    top: 10,
+    right: 30,
+    bottom: 30,
+    left: 60
+  },
+  width = 700 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
+
+  let svg = d3.select('#line_graph')
+              .append('svg')
+              .attr('width', width + margin.left + margin.right)
+              .attr('height', height + margin.top + margin.bottom)
+              .append('g')
+              .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+  let tubObject = {};
 
 	loadData('best-actress-nominees.csv').then(nominees => {
     nominees.forEach((nominee) => {
@@ -13,29 +28,83 @@ function init() {
       let hasBathTub = nominee.Bathtub.length === 0 ? false : true;
       let hasShower = nominee.Shower.length === 0 ? false : true;
 
-      if (!tubData[year]) {
-        tubData[year] = {};
-        tubData[year]['count'] = 0;
+      if (!tubObject[year]) {
+        tubObject[year] = {};
+        tubObject[year]['count'] = 0;
       }
 
-      if (!tubData[year]['bathTubScenes']) {
-        tubData[year]['bathTubScenes'] = 0;
+      if (!tubObject[year]['bathTubScenes']) {
+        tubObject[year]['bathTubScenes'] = 0;
       }
 
-      if (!tubData[year]['showerScenes']) {
-        tubData[year]['showerScenes'] = 0;
+      if (!tubObject[year]['showerScenes']) {
+        tubObject[year]['showerScenes'] = 0;
       }
 
-      tubData[year]['count']++;
+      tubObject[year]['count']++;
 
       if (hasBathTub) {
-        tubData[year]['bathTubScenes']++;
+        tubObject[year]['bathTubScenes']++;
       }
 
       if (hasShower) {
-        tubData[year]['showerScenes']++;
+        tubObject[year]['showerScenes']++;
       }
     });
+
+    let tubList = [];
+
+    for (let year in tubObject) {
+      tubList.push({
+        'year': year,
+        'bathTubScenes': tubObject[year]['bathTubScenes'],
+        'showerScenes': tubObject[year]['showerScenes']
+      });
+    }
+
+    let x = d3.scaleTime()
+              .domain(d3.extent(tubList.map((year) => {
+                return year.year;
+              })))
+              .range([0, width]);
+
+    svg.append('g')
+       .attr('transform', 'translate(0,' + height + ')')
+       .call(d3.axisBottom(x));
+
+    let y = d3.scaleLinear()
+              .domain(d3.extent(tubList.map((year) => {
+                return Math.max(year.bathTubScenes, year.showerScenes);
+              })))
+              .range([height, 0]);
+              svg.append('g')
+              .call(d3.axisLeft(y));
+
+    svg.append('path')
+       .datum(tubList)
+       .attr('fill', 'none')
+       .attr('stroke', 'steelblue')
+       .attr('stroke-width', 1.5)
+       .attr('d', d3.line()
+       .x((d) => {
+         return x(d.year)
+       })
+       .y((d) => {
+         return y(d.bathTubScenes)
+       }))
+
+    svg.append('path')
+       .datum(tubList)
+       .attr('fill', 'none')
+       .attr('stroke', 'red')
+       .attr('stroke-width', 1.5)
+       .attr('d', d3.line()
+       .x((d) => {
+         return x(d.year)
+       })
+       .y((d) => {
+         return y(d.showerScenes)
+       }))
 	}).catch(console.error);
 }
 
