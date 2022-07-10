@@ -24,9 +24,9 @@ function init() {
 
 	loadData('best-actress-nominees.csv').then(nominees => {
     nominees.forEach((nominee) => {
-      let year = nominee.Year;
-      let hasBathTub = nominee.Bathtub.length === 0 ? false : true;
-      let hasShower = nominee.Shower.length === 0 ? false : true;
+      let year = nominee['Oscar Year'];
+      let hasBathTub = nominee['Bathtub'].length === 0 ? false : true;
+      let hasShower = nominee['Shower'].length === 0 ? false : true;
 
       if (!tubObject[year]) {
         tubObject[year] = {};
