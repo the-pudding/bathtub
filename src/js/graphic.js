@@ -62,6 +62,12 @@ function init() {
       });
     }
 
+    let tooltip = d3.select('#line_graph')
+                      .append('div')
+                      .attr('class', 'tooltip')
+                      .style('visibility', 'hidden')
+                      .style('position', 'absolute');
+
     let x = d3.scaleTime()
               .domain(d3.extent(tubList.map((year) => {
                 return year.year;
@@ -92,6 +98,31 @@ function init() {
        .y((d) => {
          return y(d.bathTubScenes)
        }))
+       }));
+
+    svg.selectAll('points')
+       .data(tubList)
+       .enter()
+       .append('circle')
+       .attr('cx', (d) => {
+         return x(d.year);
+       })
+       .attr('cy', (d) => {
+         return y(d.bathTubScenes);
+       })
+       .attr('r', 4)
+       .attr('class', 'point')
+       .style('opacity', 1)
+       .on('mouseover', (d, i, n) => {
+         tooltip.style('visibility', 'visible');
+       })
+       .on('mousemove', (d) => {
+         tooltip.style('top', (event.pageY) + 'px')
+                .style('left', (event.pageX) + 'px');
+       })
+       .on('mouseout', (d) => {
+         tooltip.style('visibility', 'hidden');
+       });
 
     svg.append('path')
        .datum(tubList)
@@ -105,6 +136,29 @@ function init() {
        .y((d) => {
          return y(d.showerScenes)
        }))
+    svg.selectAll('points')
+       .data(tubList)
+       .enter()
+       .append('circle')
+       .attr('cx', (d) => {
+         return x(d.year);
+       })
+       .attr('cy', (d) => {
+         return y(d.showerScenes);
+       })
+       .attr('r', 4)
+       .attr('class', 'point')
+       .style('opacity', 1)
+       .on('mouseover', (d, i, n) => {
+         tooltip.style('visibility', 'visible');
+       })
+       .on('mousemove', (d) => {
+         tooltip.style('top', (event.pageY) + 'px')
+                .style('left', (event.pageX) + 'px');
+       })
+       .on('mouseout', (d) => {
+         tooltip.style('visibility', 'hidden');
+       });
 	}).catch(console.error);
 }
 
