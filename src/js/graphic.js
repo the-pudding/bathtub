@@ -140,8 +140,8 @@ function init() {
                 .html(formatTooltip(i, 'bathTubScenes'));
        })
        .on('mousemove', (d) => {
-         tooltip.style('top', (event.pageY) + 'px')
-                .style('left', (event.pageX) + 'px');
+         tooltip.style('top', 10 + (event.pageY) + 'px')
+                .style('left', 10 +(event.pageX) + 'px');
        })
        .on('mouseout', (d) => {
          tooltip.style('visibility', 'hidden');
@@ -178,8 +178,8 @@ function init() {
                 .html(formatTooltip(i, 'showerScenes'));
        })
        .on('mousemove', (d) => {
-         tooltip.style('top', (event.pageY) + 'px')
-                .style('left', (event.pageX) + 'px');
+         tooltip.style('top', 10 + (event.pageY) + 'px')
+                .style('left', 10 + (event.pageX) + 'px');
        })
        .on('mouseout', (d) => {
          tooltip.style('visibility', 'hidden');
