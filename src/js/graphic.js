@@ -111,7 +111,9 @@ function init() {
               })))
               .range([height, 0]);
               svg.append('g')
-              .call(d3.axisLeft(y));
+              .call(d3.axisLeft(y)
+                      .ticks(4)
+                      .tickFormat(d3.format('d')));
 
     svg.append('path')
        .datum(dataset)
