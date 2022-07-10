@@ -1,5 +1,20 @@
 import loadData from './load-data';
 
+function formatTooltip(i, sceneType) {
+  let entries = i[sceneType];
+  let sceneTypeFormatted = sceneType == 'bathTubScenes' ? 'Bathtub' : 'Shower'
+  let html = `<div>${sceneTypeFormatted} Scenes in ${i['year']}</div><ul>`;
+
+  for (let i in entries) {
+    let entry = entries[i];
+    html += `<li>${entry['actress']}, <i>${entry['film']}</i></li>`;
+  }
+
+  html += '</ul>';
+
+  return html;
+}
+
 /* global d3 */
 function resize() { }
 
@@ -120,8 +135,9 @@ function init() {
        .attr('r', 4)
        .attr('class', 'point')
        .style('opacity', 1)
-       .on('mouseover', (d, i, n) => {
-         tooltip.style('visibility', 'visible');
+       .on('mouseover', (d, i) => {
+         tooltip.style('visibility', 'visible')
+                .html(formatTooltip(i, 'bathTubScenes'));
        })
        .on('mousemove', (d) => {
          tooltip.style('top', (event.pageY) + 'px')
@@ -157,8 +173,9 @@ function init() {
        .attr('r', 4)
        .attr('class', 'point')
        .style('opacity', 1)
-       .on('mouseover', (d, i, n) => {
-         tooltip.style('visibility', 'visible');
+       .on('mouseover', (d, i) => {
+         tooltip.style('visibility', 'visible')
+                .html(formatTooltip(i, 'showerScenes'));
        })
        .on('mousemove', (d) => {
          tooltip.style('top', (event.pageY) + 'px')
