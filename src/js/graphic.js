@@ -20,7 +20,7 @@ function init() {
               .append('g')
               .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-  let tubObject = {};
+  let dataset = {};
 
 	loadData('best-actress-nominees.csv').then(nominees => {
     nominees.forEach((nominee) => {
@@ -30,30 +30,30 @@ function init() {
       let film = nominee['Film'];
       let actress = nominee['Actress'];
 
-      if (!tubObject[year]) {
-        tubObject[year] = {};
-        tubObject[year]['count'] = 0;
+      if (!dataset[year]) {
+        dataset[year] = {};
+        dataset[year]['count'] = 0;
       }
 
-      if (!tubObject[year]['bathTubScenes']) {
-        tubObject[year]['bathTubScenes'] = [];
+      if (!dataset[year]['bathTubScenes']) {
+        dataset[year]['bathTubScenes'] = [];
       }
 
-      if (!tubObject[year]['showerScenes']) {
-        tubObject[year]['showerScenes'] = [];
+      if (!dataset[year]['showerScenes']) {
+        dataset[year]['showerScenes'] = [];
       }
 
-      tubObject[year]['count']++;
+      dataset[year]['count']++;
 
       if (hasBathTub) {
-        tubObject[year]['bathTubScenes'].push({
+        dataset[year]['bathTubScenes'].push({
           film: film,
           actress: actress
         });
       }
 
       if (hasShower) {
-        tubObject[year]['showerScenes'].push({
+        dataset[year]['showerScenes'].push({
           film: film,
           actress: actress
         });
@@ -62,11 +62,11 @@ function init() {
 
     let tubList = [];
 
-    for (let year in tubObject) {
+    for (let year in dataset) {
       tubList.push({
         'year': year,
-        'bathTubScenes': tubObject[year]['bathTubScenes'],
-        'showerScenes': tubObject[year]['showerScenes']
+        'bathTubScenes': dataset[year]['bathTubScenes'],
+        'showerScenes': dataset[year]['showerScenes']
       });
     }
 
