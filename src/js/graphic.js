@@ -1,5 +1,8 @@
 import loadData from './load-data';
 
+const dataPointRadius = 4;
+const toolTipMargin = 10;
+
 function formatTooltip(i, sceneType) {
   let entries = i[sceneType];
   let sceneTypeFormatted = sceneType == 'bathTubScenes' ? 'Bathtub' : 'Shower'
@@ -132,7 +135,7 @@ function init() {
        .attr('cy', (d) => {
          return y(d.bathTubScenes.length);
        })
-       .attr('r', 4)
+       .attr('r', dataPointRadius)
        .attr('class', 'point')
        .style('opacity', 1)
        .on('mouseover', (d, i) => {
@@ -140,8 +143,8 @@ function init() {
                 .html(formatTooltip(i, 'bathTubScenes'));
        })
        .on('mousemove', (d) => {
-         tooltip.style('top', 10 + (event.pageY) + 'px')
-                .style('left', 10 +(event.pageX) + 'px');
+         tooltip.style('top', toolTipMargin + (event.pageY) + 'px')
+                .style('left', toolTipMargin +(event.pageX) + 'px');
        })
        .on('mouseout', (d) => {
          tooltip.style('visibility', 'hidden');
@@ -170,7 +173,7 @@ function init() {
        .attr('cy', (d) => {
          return y(d.showerScenes.length);
        })
-       .attr('r', 4)
+       .attr('r', dataPointRadius)
        .attr('class', 'point')
        .style('opacity', 1)
        .on('mouseover', (d, i) => {
@@ -178,8 +181,8 @@ function init() {
                 .html(formatTooltip(i, 'showerScenes'));
        })
        .on('mousemove', (d) => {
-         tooltip.style('top', 10 + (event.pageY) + 'px')
-                .style('left', 10 + (event.pageX) + 'px');
+         tooltip.style('top', toolTipMargin + (event.pageY) + 'px')
+                .style('left', toolTipMargin + (event.pageX) + 'px');
        })
        .on('mouseout', (d) => {
          tooltip.style('visibility', 'hidden');
