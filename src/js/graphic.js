@@ -35,7 +35,7 @@ function init() {
               .append('g')
               .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-  let dataset = {};
+  let dataObject = {};
 
 	loadData('best-actress-nominees.csv').then(nominees => {
     nominees.forEach((nominee) => {
@@ -45,43 +45,43 @@ function init() {
       let film = nominee['Film'];
       let actress = nominee['Actress'];
 
-      if (!dataset[year]) {
-        dataset[year] = {};
-        dataset[year]['count'] = 0;
+      if (!dataObject[year]) {
+        dataObject[year] = {};
+        dataObject[year]['count'] = 0;
       }
 
-      if (!dataset[year]['bathTubScenes']) {
-        dataset[year]['bathTubScenes'] = [];
+      if (!dataObject[year]['bathTubScenes']) {
+        dataObject[year]['bathTubScenes'] = [];
       }
 
-      if (!dataset[year]['showerScenes']) {
-        dataset[year]['showerScenes'] = [];
+      if (!dataObject[year]['showerScenes']) {
+        dataObject[year]['showerScenes'] = [];
       }
 
-      dataset[year]['count']++;
+      dataObject[year]['count']++;
 
       if (hasBathTub) {
-        dataset[year]['bathTubScenes'].push({
+        dataObject[year]['bathTubScenes'].push({
           film: film,
           actress: actress
         });
       }
 
       if (hasShower) {
-        dataset[year]['showerScenes'].push({
+        dataObject[year]['showerScenes'].push({
           film: film,
           actress: actress
         });
       }
     });
 
-    let tubList = [];
+    let dataset = [];
 
-    for (let year in dataset) {
-      tubList.push({
+    for (let year in dataObject) {
+      dataset.push({
         'year': year,
-        'bathTubScenes': dataset[year]['bathTubScenes'],
-        'showerScenes': dataset[year]['showerScenes']
+        'bathTubScenes': dataObject[year]['bathTubScenes'],
+        'showerScenes': dataObject[year]['showerScenes']
       });
     }
 
@@ -92,7 +92,7 @@ function init() {
                       .style('position', 'absolute');
 
     let x = d3.scaleTime()
-              .domain(d3.extent(tubList.map((year) => {
+              .domain(d3.extent(dataset.map((year) => {
                 return year.year;
               })))
               .range([0, width]);
@@ -102,7 +102,7 @@ function init() {
        .call(d3.axisBottom(x));
 
     let y = d3.scaleLinear()
-              .domain(d3.extent(tubList.map((year) => {
+              .domain(d3.extent(dataset.map((year) => {
                 return Math.max(year.bathTubScenes.length, year.showerScenes.length);
               })))
               .range([height, 0]);
@@ -110,7 +110,7 @@ function init() {
               .call(d3.axisLeft(y));
 
     svg.append('path')
-       .datum(tubList)
+       .datum(dataset)
        .attr('fill', 'none')
        .attr('stroke', 'steelblue')
        .attr('stroke-width', 1.5)
@@ -123,7 +123,7 @@ function init() {
        }));
 
     svg.selectAll('points')
-       .data(tubList)
+       .data(dataset)
        .enter()
        .append('circle')
        .attr('cx', (d) => {
@@ -148,7 +148,7 @@ function init() {
        });
 
     svg.append('path')
-       .datum(tubList)
+       .datum(dataset)
        .attr('fill', 'none')
        .attr('stroke', 'red')
        .attr('stroke-width', 1.5)
@@ -161,7 +161,7 @@ function init() {
        }));
 
     svg.selectAll('points')
-       .data(tubList)
+       .data(dataset)
        .enter()
        .append('circle')
        .attr('cx', (d) => {
