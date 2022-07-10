@@ -27,6 +27,8 @@ function init() {
       let year = nominee['Oscar Year'];
       let hasBathTub = nominee['Bathtub'].length === 0 ? false : true;
       let hasShower = nominee['Shower'].length === 0 ? false : true;
+      let film = nominee['Film'];
+      let actress = nominee['Actress'];
 
       if (!tubObject[year]) {
         tubObject[year] = {};
@@ -34,21 +36,27 @@ function init() {
       }
 
       if (!tubObject[year]['bathTubScenes']) {
-        tubObject[year]['bathTubScenes'] = 0;
+        tubObject[year]['bathTubScenes'] = [];
       }
 
       if (!tubObject[year]['showerScenes']) {
-        tubObject[year]['showerScenes'] = 0;
+        tubObject[year]['showerScenes'] = [];
       }
 
       tubObject[year]['count']++;
 
       if (hasBathTub) {
-        tubObject[year]['bathTubScenes']++;
+        tubObject[year]['bathTubScenes'].push({
+          film: film,
+          actress: actress
+        });
       }
 
       if (hasShower) {
-        tubObject[year]['showerScenes']++;
+        tubObject[year]['showerScenes'].push({
+          film: film,
+          actress: actress
+        });
       }
     });
 
@@ -80,7 +88,7 @@ function init() {
 
     let y = d3.scaleLinear()
               .domain(d3.extent(tubList.map((year) => {
-                return Math.max(year.bathTubScenes, year.showerScenes);
+                return Math.max(year.bathTubScenes.length, year.showerScenes.length);
               })))
               .range([height, 0]);
               svg.append('g')
@@ -96,7 +104,7 @@ function init() {
          return x(d.year)
        })
        .y((d) => {
-         return y(d.bathTubScenes)
+         return y(d.bathTubScenes.length)
        }));
 
     svg.selectAll('points')
@@ -107,7 +115,7 @@ function init() {
          return x(d.year);
        })
        .attr('cy', (d) => {
-         return y(d.bathTubScenes);
+         return y(d.bathTubScenes.length);
        })
        .attr('r', 4)
        .attr('class', 'point')
@@ -133,7 +141,7 @@ function init() {
          return x(d.year)
        })
        .y((d) => {
-         return y(d.showerScenes)
+         return y(d.showerScenes.length)
        }));
 
     svg.selectAll('points')
@@ -144,7 +152,7 @@ function init() {
          return x(d.year);
        })
        .attr('cy', (d) => {
-         return y(d.showerScenes);
+         return y(d.showerScenes.length);
        })
        .attr('r', 4)
        .attr('class', 'point')
