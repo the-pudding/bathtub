@@ -97,7 +97,6 @@ function init() {
        })
        .y((d) => {
          return y(d.bathTubScenes)
-       }))
        }));
 
     svg.selectAll('points')
@@ -135,7 +134,8 @@ function init() {
        })
        .y((d) => {
          return y(d.showerScenes)
-       }))
+       }));
+
     svg.selectAll('points')
        .data(tubList)
        .enter()
