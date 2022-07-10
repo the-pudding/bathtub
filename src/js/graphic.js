@@ -10,8 +10,8 @@ function init() {
     bottom: 30,
     left: 60
   },
-  width = 700 - margin.left - margin.right,
-  height = 400 - margin.top - margin.bottom;
+  width = 900 - margin.left - margin.right,
+  height = 500 - margin.top - margin.bottom;
 
   let svg = d3.select('#line_graph')
               .append('svg')
