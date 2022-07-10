@@ -94,7 +94,7 @@ function init() {
                       .style('visibility', 'hidden')
                       .style('position', 'absolute');
 
-    let x = d3.scaleTime()
+    let x = d3.scaleLinear()
               .domain(d3.extent(dataset.map((year) => {
                 return year.year;
               })))
@@ -102,7 +102,8 @@ function init() {
 
     svg.append('g')
        .attr('transform', 'translate(0,' + height + ')')
-       .call(d3.axisBottom(x));
+       .call(d3.axisBottom(x)
+               .tickFormat(d3.format('d')));
 
     let y = d3.scaleLinear()
               .domain(d3.extent(dataset.map((year) => {
