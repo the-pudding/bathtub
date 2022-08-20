@@ -22,8 +22,17 @@ function formatTooltip(i, sceneType) {
   return html;
 }
 
-function calculateToolTipPosition(mousePosition) {
-  return toolTipMargin + mousePosition + 'px';
+function calculateToolTipPosition(mousePosition, dimension) {
+  let screenWidth = window.innerWidth;
+  let margin = toolTipMargin;
+  let toolTipWidth = d3.select('.tooltip')
+                       .style('width');
+
+  if (dimension == 'x' && mousePosition > screenWidth / 2) {
+    margin -= +toolTipWidth.replace('px', '');
+  }
+
+  return margin + mousePosition + 'px';
 }
 
 /* global d3 */
@@ -154,8 +163,8 @@ function init() {
                 .html(formatTooltip(i, 'bathTubScenes'));
        })
        .on('mousemove', (d) => {
-         tooltip.style('top', calculateToolTipPosition(event.pageY))
-                .style('left', calculateToolTipPosition(event.pageX));
+         tooltip.style('top', calculateToolTipPosition(event.pageY, 'y'))
+                .style('left', calculateToolTipPosition(event.pageX, 'x'));
        })
        .on('mouseout', (d) => {
          tooltip.style('visibility', 'hidden');
@@ -192,8 +201,8 @@ function init() {
                 .html(formatTooltip(i, 'showerScenes'));
        })
        .on('mousemove', (d) => {
-         tooltip.style('top', calculateToolTipPosition(event.pageY))
-                .style('left', calculateToolTipPosition(event.pageX));
+         tooltip.style('top', calculateToolTipPosition(event.pageY, 'y'))
+                .style('left', calculateToolTipPosition(event.pageX, 'x'));
        })
        .on('mouseout', (d) => {
          tooltip.style('visibility', 'hidden');
