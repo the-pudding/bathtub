@@ -22,6 +22,10 @@ function formatTooltip(i, sceneType) {
   return html;
 }
 
+function calculateToolTipPosition(mousePosition) {
+  return toolTipMargin + mousePosition + 'px';
+}
+
 /* global d3 */
 function resize() { }
 
@@ -150,8 +154,8 @@ function init() {
                 .html(formatTooltip(i, 'bathTubScenes'));
        })
        .on('mousemove', (d) => {
-         tooltip.style('top', toolTipMargin + (event.pageY) + 'px')
-                .style('left', toolTipMargin +(event.pageX) + 'px');
+         tooltip.style('top', calculateToolTipPosition(event.pageY))
+                .style('left', calculateToolTipPosition(event.pageX));
        })
        .on('mouseout', (d) => {
          tooltip.style('visibility', 'hidden');
@@ -188,8 +192,8 @@ function init() {
                 .html(formatTooltip(i, 'showerScenes'));
        })
        .on('mousemove', (d) => {
-         tooltip.style('top', toolTipMargin + (event.pageY) + 'px')
-                .style('left', toolTipMargin + (event.pageX) + 'px');
+         tooltip.style('top', calculateToolTipPosition(event.pageY))
+                .style('left', calculateToolTipPosition(event.pageX));
        })
        .on('mouseout', (d) => {
          tooltip.style('visibility', 'hidden');
