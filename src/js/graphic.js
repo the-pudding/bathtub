@@ -10,7 +10,11 @@ function formatTooltip(i, sceneType) {
 
   for (let i in entries) {
     let entry = entries[i];
-    html += `<li>${entry['actress']}, <i>${entry['film']}</i></li>`;
+    let filmName = entry['film'];
+    let filmNameClean = filmName.replace('/', '_');
+
+    html += `<li>${entry['actress']}, <i>${filmName}</i></li>`;
+    html += `<img src="assets/images/bathtub-images/${filmNameClean}.jpeg">`
   }
 
   html += '</ul>';
