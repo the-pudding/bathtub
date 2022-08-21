@@ -213,9 +213,9 @@ function init() {
     svg.append('text')
        .attr('class', 'x label')
        .attr('text-anchor', 'middle')
-       .text('Year');
        .attr('x', width / 2)
        .attr('y', height + 60)
+       .text('Oscar Year');
 
     svg.append('text')
        .attr('class', 'y label')
@@ -224,7 +224,7 @@ function init() {
        .attr('y', -60)
        .attr('dy', '.75em')
        .attr('transform', 'rotate(-90)')
-       .text('Bathtub Scenes');
+       .text('Number of Scenes');
 	}).catch(console.error);
   }
 
