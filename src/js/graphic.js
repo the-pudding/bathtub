@@ -1,5 +1,10 @@
 import loadData from './load-data';
 
+// Checks length of data cell corresponding to bathtub or shower scene.
+function hasScene(entry) {
+  return entry.length === 0 ? false : true
+}
+
 function initializeBestActressBarchart() {
   const toolTipMargin = 10;
   const chartName = '#best_actress_bar_chart';
@@ -25,8 +30,8 @@ function initializeBestActressBarchart() {
 	loadData('best-actress-nominees.csv').then(nominees => {
     nominees.forEach((nominee) => {
       let year = nominee['Oscar Year'];
-      let hasBathTubScene = nominee['Bathtub'].length === 0 ? false : true;
-      let hasShowerScene = nominee['Shower'].length === 0 ? false : true;
+      let hasBathTubScene = hasScene(nominee['Bathtub']);
+      let hasShowerScene = hasScene(nominee['Shower']);
       let film = nominee['Film'];
       let actress = nominee['Actress'];
 
