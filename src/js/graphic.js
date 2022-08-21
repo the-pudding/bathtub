@@ -37,6 +37,7 @@ function calculateToolTipPosition(mousePosition, dimension) {
   return margin + mousePosition + 'px';
 }
 
+
 /* global d3 */
 function resize() { }
 
@@ -160,12 +161,15 @@ function init() {
                          .domain(subgroups)
                          .range(['#e41a1c','#377eb8']);
 
+    let filtered = [];
+
     // Initialize best actress barchart.
     svg.append('g')
        .selectAll('g')
        .data(dataset)
        .enter()
        .append('g')
+       .attr('class', 'bar')
        .attr('transform', (d) => {
          // Calculate x position of bar groups by year.
          return `translate(${x(d.year)}, 0)`;
@@ -246,7 +250,10 @@ function init() {
           .attr('height', 15)
           .attr('fill', color)
           .attr('stroke', color)
-          .attr('stroke-width', 2);
+          .attr('stroke-width', 2)
+          .on('click', (d, i) => {
+            updateLegend(i);
+          });
 
     // Add group names to legend for best actress barchart.
     legend.append('text')
@@ -256,6 +263,103 @@ function init() {
           .text((d) => {
             return d == 'bathTubScenes' ? 'Bathtub' : 'Shower';
           });
+
+    function updateLegend(group) {
+      // Add clicked group to groups removed.
+      if (filtered.indexOf(group) == -1) {
+        filtered.push(group);
+
+        // If all groups are unchecked, then reset.
+        if (filtered.length == subgroups.length) {
+          filtered = [];
+        }
+      }
+      // Otherwise, display it.
+      else {
+        filtered.splice(filtered.indexOf(group), 1);
+      }
+
+      // Update x-scales for each filtered item.
+      let newSubgroups = [];
+
+      subgroups.forEach((g) => {
+        if (filtered.indexOf(g) == -1) {
+          newSubgroups.push(g);
+        }
+      });
+
+      xSubgroup.domain(newSubgroups)
+               .range([0, x.bandwidth()]);
+
+      // Filter out bars that need to be hidden.
+      let bars = svg.selectAll('.bar')
+                    .selectAll('rect')
+                    .data((d) => {
+                      let year = d.year;
+
+                      // Calculate number of shower and bathtub scenes for each year.
+                      return subgroups.map((sceneType) => {
+                        return {
+                          year: year,
+                          sceneType: sceneType,
+                          scenes: d[sceneType]
+                        };
+                      });
+                    });
+
+      // Filter bars to hide.
+      bars.filter((d) => {
+        return filtered.indexOf(d.sceneType) > -1;
+      })
+      .transition()
+      .attr('x', (d, i, n) => {
+        return +d3.select(n[i]).attr('x') + +d3.select(n[i]).attr('width') / 2;
+      })
+      .attr('height', 0)
+      .attr('width', 0)
+      .attr('y', (d) => {
+        return height;
+      })
+      .duration(500);
+
+      // Adjust remaining bars.
+      bars.filter((d) => {
+        return filtered.indexOf(d.sceneType) == -1;
+      })
+      .transition()
+      .attr('x', (d) => {
+        return xSubgroup(d.sceneType);
+      })
+      .attr('y', (d) => {
+        return y(d.scenes.length);
+      })
+      .attr('width', xSubgroup.bandwidth())
+      .attr('height', (d) => {
+        return height - y(d.scenes.length);
+      })
+      .attr('fill', (d) => {
+        return color(d.sceneType);
+      })
+      .duration(500);
+
+      // Update legend.
+      legend.selectAll('rect')
+            .transition()
+            .attr('fill', (d) => {
+              if (filtered.length) {
+                if (filtered.indexOf(d) == -1) {
+                  return color(d);
+                }
+                else {
+                  return 'white';
+                }
+              }
+              else {
+                return color(d);
+              }
+            })
+            .duration(100);
+    }
 	}).catch(console.error);
   }
 
