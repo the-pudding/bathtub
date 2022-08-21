@@ -3,17 +3,19 @@ import loadData from './load-data';
 const dataPointRadius = 4;
 const toolTipMargin = 10;
 
-function formatTooltip(i, sceneType) {
-  let entries = i[sceneType];
-  let sceneTypeFormatted = sceneType == 'bathTubScenes' ? 'Bathtub' : 'Shower'
-  let html = `<div>${sceneTypeFormatted} Scenes in ${i['year']}</div><ul>`;
+function formatTooltip(scenesObject) {
+  let scenes = scenesObject.scenes;
+  let year = scenesObject.year;
+  let sceneType = scenesObject.sceneType;
+  let sceneTypeFormatted = sceneType == 'bathTubScenes' ? 'Bathtub' : 'Shower';
+  let html = `<div>${sceneTypeFormatted} Scenes in ${year}</div><ul>`;
 
-  for (let i in entries) {
-    let entry = entries[i];
-    let filmName = entry['film'];
+  for (let i in scenes) {
+    let scene = scenes[i];
+    let filmName = scene['film'];
     let filmNameClean = filmName.replace('/', '_');
 
-    html += `<li>${entry['actress']}, <i>${filmName}</i></li>`;
+    html += `<li>${scene['actress']}, <i>${filmName}</i></li>`;
     html += `<img src="assets/images/bathtub-images/${filmNameClean}.jpeg">`
   }
 
@@ -166,29 +168,43 @@ function init() {
        })
        .selectAll('rect')
        .data((d) => {
+         let year = d.year;
+
          // Calculate number of shower and bathtub scenes for each year.
-         return subgroups.map((key) => {
+         return subgroups.map((sceneType) => {
            return {
-             key: key,
-             value: d[key].length
+             year: year,
+             sceneType: sceneType,
+             scenes: d[sceneType]
            };
          });
        })
        .enter()
        .append('rect')
        .attr('x', (d) => {
-         return xSubgroup(d.key);
+         return xSubgroup(d.sceneType);
        })
        .attr('y', (d) => {
-         return y(d.value);
+         return y(d.scenes.length);
        })
        .attr('width', xSubgroup.bandwidth())
        .attr('height', (d) => {
-         return height - y(d.value);
+         return height - y(d.scenes.length);
        })
        .attr('fill', (d) => {
-         return color(d.key);
-       });
+         return color(d.sceneType);
+       })
+       .on('mouseover', (d, i) => {
+         tooltip.style('visibility', 'visible')
+                .html(formatTooltip(i));
+       })
+       .on('mousemove', (d) => {
+         tooltip.style('top', calculateToolTipPosition(event.pageY, 'y'))
+                .style('left', calculateToolTipPosition(event.pageX, 'x'));
+       })
+       .on('mouseout', (d) => {
+         tooltip.style('visibility', 'hidden');
+       })
 
     svg.append('text')
        .attr('class', 'x label')
