@@ -37,11 +37,7 @@ function calculateToolTipPosition(mousePosition, dimension) {
   return margin + mousePosition + 'px';
 }
 
-
-/* global d3 */
-function resize() { }
-
-function init() {
+function initializeBestActressBarchart() {
   let margin = {
     top: 10,
     right: 30,
@@ -360,7 +356,15 @@ function init() {
             })
             .duration(100);
     }
-	}).catch(console.error);
-  }
+  }).catch(console.error);
+}
+
+
+/* global d3 */
+function resize() { }
+
+function init() {
+	initializeBestActressBarchart();
+}
 
 export default { init, resize };
