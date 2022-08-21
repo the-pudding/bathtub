@@ -44,7 +44,7 @@ function init() {
   let margin = {
     top: 10,
     right: 30,
-    bottom: 50,
+    bottom: 70,
     left: 60
   },
   width = 900 - margin.left - margin.right,
@@ -213,14 +213,15 @@ function init() {
     svg.append('text')
        .attr('class', 'x label')
        .attr('text-anchor', 'middle')
-       .attr('x', width)
-       .attr('y', height + 40)
        .text('Year');
+       .attr('x', width / 2)
+       .attr('y', height + 60)
 
     svg.append('text')
        .attr('class', 'y label')
        .attr('text-anchor', 'middle')
-       .attr('y', 6)
+       .attr('x', -height / 2)
+       .attr('y', -60)
        .attr('dy', '.75em')
        .attr('transform', 'rotate(-90)')
        .text('Bathtub Scenes');
