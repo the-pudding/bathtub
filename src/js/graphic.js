@@ -469,7 +469,7 @@ function initializeBigSampleLinechart() {
     // Define x-axis.
     let x = d3.scaleLinear()
           .domain(d3.extent(dataset.map((year) => {
-            return year.year;
+            return year['year'];
           })))
           .range([0, width]);
 
