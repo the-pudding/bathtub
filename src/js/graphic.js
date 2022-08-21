@@ -365,6 +365,10 @@ function initializeBestActressBarchart() {
 }
 
 function initializeBigSampleLinechart() {
+  function maxInArray(array) {
+    return Math.max(...array);
+  }
+
   // Initialize constants.
   const chartName = '#big_sample_line_chart';
   const margin = {
@@ -435,6 +439,63 @@ function initializeBigSampleLinechart() {
         dataObject[year]['femaleShowerScenes']++;
       }
     });
+
+    // Create flat dataset and calculate maximum number of scenes of any scene type of any year.
+    let dataset = [];
+    let maxScenes = 0;
+
+    for (let year in dataObject) {
+      let maleBathTubScenes = dataObject[year]['maleBathTubScenes'];
+      let femaleBathTubScenes = dataObject[year]['femaleBathTubScenes'];
+      let maleShowerScenes = dataObject[year]['maleShowerScenes'];
+      let femaleShowerScenes = dataObject[year]['femaleShowerScenes'];
+
+      // Update maximum number of scenes total.
+      let maxScenesInYear = maxInArray([maleBathTubScenes, femaleBathTubScenes, maleShowerScenes, femaleShowerScenes]);
+
+      if (maxScenesInYear > maxScenes) {
+        maxScenes = maxScenesInYear;
+      }
+
+      dataset.push({
+        'year': year,
+        'maleBathTubScenes': maleBathTubScenes,
+        'femaleBathTubScenes': femaleBathTubScenes,
+        'maleShowerScenes': maleShowerScenes,
+        'femaleShowerScenes': femaleShowerScenes
+      });
+    }
+
+    // Define x-axis.
+    let x = d3.scaleLinear()
+          .domain(d3.extent(dataset.map((year) => {
+            return year.year;
+          })))
+          .range([0, width]);
+
+    // Initialize x-axis.
+    svg.append('g')
+       .attr('transform', 'translate(0,' + height + ')')
+       .call(d3.axisBottom(x)
+               .tickFormat(d3.format('d')))
+               .selectAll('text')
+               .attr('dx', '-1.5em')
+               .attr('dy', '0.7em')
+               .attr('transform', 'rotate(-45)');;
+
+    // Define y-axis.
+    let y = d3.scaleLinear()
+              .domain(d3.extent(dataset.map((filmYear) => {
+                // Calculate maximum number of scenes of any scene type.
+                return maxInArray([filmYear['maleBathTubScenes'], filmYear['femaleBathTubScenes'], filmYear['maleShowerScenes'], filmYear['femaleShowerScenes']]);
+              })))
+              .range([height, 0]);
+
+    // Initialize y-axis.
+    svg.append('g')
+    .call(d3.axisLeft(y)
+            .ticks(maxScenes)
+            .tickFormat(d3.format('d')));
   });
 }
 
