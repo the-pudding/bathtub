@@ -128,7 +128,11 @@ function init() {
     svg.append('g')
        .attr('transform', `translate(0, ${height})`)
        .call(d3.axisBottom(x)
-               .tickFormat(d3.format('d')));
+               .tickFormat(d3.format('d')))
+               .selectAll('text')
+               .attr('dx', '-1.5em')
+               .attr('dy', '0.7em')
+               .attr('transform', 'rotate(-45)');
 
     // Define y-axis for best actress visualization.
     let y = d3.scaleLinear()
