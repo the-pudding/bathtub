@@ -227,6 +227,11 @@ function init() {
        .attr('dy', '.75em')
        .attr('transform', 'rotate(-90)')
        .text('Number of Scenes');
+
+    // Initialize legend for best actress barchart.
+    let legend = svg.append('g')
+                    .attr('text-anchor', 'end')
+
 	}).catch(console.error);
   }
 
