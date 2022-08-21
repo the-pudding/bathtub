@@ -356,7 +356,7 @@ function initializeBestActressBarchart() {
 
       return margin + mousePosition + 'px';
     }
-  }).catch(console.error);
+  });
 }
 
 
