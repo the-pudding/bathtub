@@ -3,40 +3,6 @@ import loadData from './load-data';
 const dataPointRadius = 4;
 const toolTipMargin = 10;
 
-function formatTooltip(scenesObject) {
-  let scenes = scenesObject.scenes;
-  let year = scenesObject.year;
-  let sceneType = scenesObject.sceneType;
-  let sceneTypeFormatted = sceneType == 'bathTubScenes' ? 'Bathtub' : 'Shower';
-  let html = `<div>${sceneTypeFormatted} Scenes in ${year}</div><ul>`;
-
-  for (let i in scenes) {
-    let scene = scenes[i];
-    let filmName = scene['film'];
-    let filmNameClean = filmName.replace('/', '_');
-
-    html += `<li>${scene['actress']}, <i>${filmName}</i></li>`;
-    html += `<img src="assets/images/bathtub-images/${filmNameClean}.jpeg">`
-  }
-
-  html += '</ul>';
-
-  return html;
-}
-
-function calculateToolTipPosition(mousePosition, dimension) {
-  let screenWidth = window.innerWidth;
-  let margin = toolTipMargin;
-  let toolTipWidth = d3.select('.tooltip')
-                       .style('width');
-
-  if (dimension == 'x' && mousePosition > screenWidth / 2) {
-    margin -= +toolTipWidth.replace('px', '');
-  }
-
-  return margin + mousePosition + 'px';
-}
-
 function initializeBestActressBarchart() {
   let margin = {
     top: 10,
@@ -355,6 +321,40 @@ function initializeBestActressBarchart() {
               }
             })
             .duration(100);
+    }
+
+    function formatTooltip(scenesObject) {
+      let scenes = scenesObject.scenes;
+      let year = scenesObject.year;
+      let sceneType = scenesObject.sceneType;
+      let sceneTypeFormatted = sceneType == 'bathTubScenes' ? 'Bathtub' : 'Shower';
+      let html = `<div>${sceneTypeFormatted} Scenes in ${year}</div><ul>`;
+
+      for (let i in scenes) {
+        let scene = scenes[i];
+        let filmName = scene['film'];
+        let filmNameClean = filmName.replace('/', '_');
+
+        html += `<li>${scene['actress']}, <i>${filmName}</i></li>`;
+        html += `<img src="assets/images/bathtub-images/${filmNameClean}.jpeg">`
+      }
+
+      html += '</ul>';
+
+      return html;
+    }
+
+    function calculateToolTipPosition(mousePosition, dimension) {
+      let screenWidth = window.innerWidth;
+      let margin = toolTipMargin;
+      let toolTipWidth = d3.select('.tooltip')
+                           .style('width');
+
+      if (dimension == 'x' && mousePosition > screenWidth / 2) {
+        margin -= +toolTipWidth.replace('px', '');
+      }
+
+      return margin + mousePosition + 'px';
     }
   }).catch(console.error);
 }
