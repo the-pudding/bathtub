@@ -1,9 +1,9 @@
 import loadData from './load-data';
 
-const dataPointRadius = 4;
-const toolTipMargin = 10;
-
 function initializeBestActressBarchart() {
+  const toolTipMargin = 10;
+  const chartName = '#best_actress_bar_chart';
+
   let margin = {
     top: 10,
     right: 30,
@@ -13,7 +13,7 @@ function initializeBestActressBarchart() {
   width = 1100 - margin.left - margin.right,
   height = 500 - margin.top - margin.bottom;
 
-  let svg = d3.select('#line_graph')
+  let svg = d3.select(chartName)
               .append('svg')
               .attr('width', width + margin.left + margin.right)
               .attr('height', height + margin.top + margin.bottom)
@@ -70,7 +70,7 @@ function initializeBestActressBarchart() {
       });
     }
 
-    let tooltip = d3.select('#line_graph')
+    let tooltip = d3.select(chartName)
                       .append('div')
                       .attr('class', 'tooltip')
                       .style('visibility', 'hidden')
