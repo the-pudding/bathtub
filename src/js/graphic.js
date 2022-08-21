@@ -111,27 +111,6 @@ function init() {
                       .style('visibility', 'hidden')
                       .style('position', 'absolute');
 
-    let x = d3.scaleLinear()
-              .domain(d3.extent(dataset.map((year) => {
-                return year.year;
-              })))
-              .range([0, width]);
-
-    svg.append('g')
-       .attr('transform', 'translate(0,' + height + ')')
-       .call(d3.axisBottom(x)
-               .tickFormat(d3.format('d')));
-
-    let y = d3.scaleLinear()
-              .domain(d3.extent(dataset.map((year) => {
-                return Math.max(year.bathTubScenes.length, year.showerScenes.length);
-              })))
-              .range([height, 0]);
-              svg.append('g')
-              .call(d3.axisLeft(y)
-                      .ticks(4)
-                      .tickFormat(d3.format('d')));
-
     svg.append('path')
        .datum(dataset)
        .attr('fill', 'none')
@@ -206,6 +185,86 @@ function init() {
        })
        .on('mouseout', (d) => {
          tooltip.style('visibility', 'hidden');
+       });
+
+
+    // Create list of years.
+    let years = dataset.map((year) => {
+      return year.year;
+    });
+
+    // Define x-axis for best actress visualization.
+    let x = d3.scaleBand()
+              .domain(years)
+              .range([0, width])
+              .padding([0.2]);
+
+    // Initialize x-axis.
+    svg.append('g')
+       .attr('transform', `translate(0, ${height})`)
+       .call(d3.axisBottom(x)
+               .tickFormat(d3.format('d')));
+
+    // Define y-axis for best actress visualization.
+    let y = d3.scaleLinear()
+              .domain(d3.extent(dataset.map((year) => {
+                return Math.max(year.bathTubScenes.length, year.showerScenes.length);
+              })))
+              .range([height, 0]);
+
+    // Initialize y-axis.
+    svg.append('g')
+    .call(d3.axisLeft(y)
+            .ticks(4)
+            .tickFormat(d3.format('d')));
+
+    // Initialize x-axis subgroup.
+    let subgroups = ['showerScenes', 'bathTubScenes'];
+
+    let xSubgroup = d3.scaleBand()
+                      .domain(subgroups)
+                      .range([0, x.bandwidth()])
+                      .padding([0.05]);
+
+    // Initialize color palette for subgroups.
+    let color = d3.scaleOrdinal()
+                         .domain(subgroups)
+                         .range(['#e41a1c','#377eb8']);
+
+    // Initialize best actress barchart.
+    svg.append('g')
+       .selectAll('g')
+       .data(dataset)
+       .enter()
+       .append('g')
+       .attr('transform', (d) => {
+         // Calculate x position of bar groups by year.
+         return `translate(${x(d.year)}, 0)`;
+       })
+       .selectAll('rect')
+       .data((d) => {
+         // Calculate number of shower and bathtub scenes for each year.
+         return subgroups.map((key) => {
+           return {
+             key: key,
+             value: d[key].length
+           };
+         });
+       })
+       .enter()
+       .append('rect')
+       .attr('x', (d) => {
+         return xSubgroup(d.key);
+       })
+       .attr('y', (d) => {
+         return y(d.value);
+       })
+       .attr('width', xSubgroup.bandwidth())
+       .attr('height', (d) => {
+         return height - y(d.value);
+       })
+       .attr('fill', (d) => {
+         return color(d.key);
        });
 
     svg.append('text')
