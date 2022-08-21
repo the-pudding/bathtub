@@ -231,7 +231,31 @@ function init() {
     // Initialize legend for best actress barchart.
     let legend = svg.append('g')
                     .attr('text-anchor', 'end')
+                    .selectAll('g')
+                    .data(subgroups)
+                    .enter()
+                    .append('g')
+                    .attr('transform', (d, i) => {
+                      return `translate(0, ${i * 20})`;
+                    });
 
+    // Add color rectangles to legend for best actress barchart.
+    legend.append('rect')
+          .attr('x', width - 17)
+          .attr('width', 15)
+          .attr('height', 15)
+          .attr('fill', color)
+          .attr('stroke', color)
+          .attr('stroke-width', 2);
+
+    // Add group names to legend for best actress barchart.
+    legend.append('text')
+          .attr('x', width - 24)
+          .attr('y', 9.5)
+          .attr('dy', '0.32em')
+          .text((d) => {
+            return d == 'bathTubScenes' ? 'Bathtub' : 'Shower';
+          });
 	}).catch(console.error);
   }
 
