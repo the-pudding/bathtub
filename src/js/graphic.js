@@ -25,8 +25,8 @@ function initializeBestActressBarchart() {
 	loadData('best-actress-nominees.csv').then(nominees => {
     nominees.forEach((nominee) => {
       let year = nominee['Oscar Year'];
-      let hasBathTub = nominee['Bathtub'].length === 0 ? false : true;
-      let hasShower = nominee['Shower'].length === 0 ? false : true;
+      let hasBathTubScene = nominee['Bathtub'].length === 0 ? false : true;
+      let hasShowerScene = nominee['Shower'].length === 0 ? false : true;
       let film = nominee['Film'];
       let actress = nominee['Actress'];
 
@@ -45,14 +45,14 @@ function initializeBestActressBarchart() {
 
       dataObject[year]['count']++;
 
-      if (hasBathTub) {
+      if (hasBathTubScene) {
         dataObject[year]['bathTubScenes'].push({
           film: film,
           actress: actress
         });
       }
 
-      if (hasShower) {
+      if (hasShowerScene) {
         dataObject[year]['showerScenes'].push({
           film: film,
           actress: actress
