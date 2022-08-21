@@ -364,12 +364,87 @@ function initializeBestActressBarchart() {
   });
 }
 
+function initializeBigSampleLinechart() {
+  // Initialize constants.
+  const chartName = '#big_sample_line_chart';
+  const margin = {
+    top: 10,
+    right: 30,
+    bottom: 70,
+    left: 60
+  }
+  const width = 1100 - margin.left - margin.right;
+  const height = 500 - margin.top - margin.bottom;
+
+  // Initialize big sample line chart.
+  let svg = d3.select(chartName)
+              .append('svg')
+              .attr('width', width + margin.left + margin.right)
+              .attr('height', height + margin.top + margin.bottom)
+              .append('g')
+              .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+  // Load big sample data.
+  let dataObject = {};
+
+  loadData('big-sample.csv').then(films => {
+    films.forEach((film) => {
+      // Calculate number of male/female bathtub/shower scenes for each year.
+      let year = film['Year'];
+      let hasMaleBathTubScene = hasScene(film['Bathtub Actor 1']);
+      let hasFemaleBathTubScene = hasScene(film['Bathtub Actress 1']);
+      let hasMaleShowerScene = hasScene(film['Shower Actor 1']);
+      let hasFemaleShowerScene = hasScene(film['Shower Actress 1']);
+
+      // If year is empty, initialize it.
+      if (!dataObject[year]) {
+        dataObject[year] = {};
+      }
+
+      // If male/female bathtub/shower scenes are empty, initialize them.
+      if (!dataObject[year]['maleBathTubScenes']) {
+        dataObject[year]['maleBathTubScenes'] = 0;
+      }
+
+      if (!dataObject[year]['femaleBathTubScenes']) {
+        dataObject[year]['femaleBathTubScenes'] = 0;
+      }
+
+      if (!dataObject[year]['maleShowerScenes']) {
+        dataObject[year]['maleShowerScenes'] = 0;
+      }
+
+      if (!dataObject[year]['femaleShowerScenes']) {
+        dataObject[year]['femaleShowerScenes'] = 0;
+      }
+
+      // Sum up male/female bathtub/shower scenes.
+      if (hasMaleBathTubScene) {
+        dataObject[year]['maleBathTubScenes']++;
+      }
+
+      if (hasFemaleBathTubScene) {
+        dataObject[year]['femaleBathTubScenes']++;
+      }
+
+      if (hasMaleShowerScene) {
+        dataObject[year]['maleShowerScenes']++;
+      }
+
+      if (hasFemaleShowerScene) {
+        dataObject[year]['femaleShowerScenes']++;
+      }
+    });
+  });
+}
+
 
 /* global d3 */
 function resize() { }
 
 function init() {
   initializeBestActressBarchart();
+  initializeBigSampleLinechart();
 }
 
 export default { init, resize };
