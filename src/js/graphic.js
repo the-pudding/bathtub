@@ -379,6 +379,7 @@ function initializeBigSampleLinechart() {
   }
   const width = 1100 - margin.left - margin.right;
   const height = 500 - margin.top - margin.bottom;
+  const strokeWidth = 1.5;
 
   // Initialize big sample line chart.
   let svg = d3.select(chartName)
@@ -496,6 +497,29 @@ function initializeBigSampleLinechart() {
     .call(d3.axisLeft(y)
             .ticks(maxScenes)
             .tickFormat(d3.format('d')));
+
+    // Create male/female bathtub/shower scene lines.
+    let sceneTypes = ['maleBathTubScenes', 'femaleBathTubScenes', 'maleShowerScenes', 'femaleShowerScenes'];
+    let sceneTypeLineColors = ['red', 'green', 'blue', 'orange'];
+
+    for (let i in sceneTypes) {
+      let sceneType = sceneTypes[i];
+
+      svg.append('path')
+         .datum(dataset)
+         .attr('fill', 'none')
+         .attr('stroke', () => {
+           return sceneTypeLineColors[i];
+         })
+         .attr('stroke-width', strokeWidth)
+         .attr('d', d3.line()
+         .x((d) => {
+           return x(d['year'])
+         })
+         .y((d) => {
+           return y(d[sceneType])
+         }));
+    }
   });
 }
 
