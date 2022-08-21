@@ -47,7 +47,7 @@ function init() {
     bottom: 70,
     left: 60
   },
-  width = 900 - margin.left - margin.right,
+  width = 1100 - margin.left - margin.right,
   height = 500 - margin.top - margin.bottom;
 
   let svg = d3.select('#line_graph')
