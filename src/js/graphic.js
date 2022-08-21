@@ -210,6 +210,7 @@ function init() {
          tooltip.style('visibility', 'hidden');
        })
 
+    // Initialize x-axis label.
     svg.append('text')
        .attr('class', 'x label')
        .attr('text-anchor', 'middle')
@@ -217,6 +218,7 @@ function init() {
        .attr('y', height + 60)
        .text('Oscar Year');
 
+    // Initialize y-axis label.
     svg.append('text')
        .attr('class', 'y label')
        .attr('text-anchor', 'middle')
