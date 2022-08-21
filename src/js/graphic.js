@@ -364,7 +364,7 @@ function initializeBestActressBarchart() {
 function resize() { }
 
 function init() {
-	initializeBestActressBarchart();
+  initializeBestActressBarchart();
 }
 
 export default { init, resize };
