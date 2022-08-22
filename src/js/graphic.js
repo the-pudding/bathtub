@@ -458,10 +458,10 @@ function initializeBigSampleLinechart() {
 
       dataset.push({
         'year': year,
-        'maleBathTubScenes': maleBathTubScenes,
-        'femaleBathTubScenes': femaleBathTubScenes,
-        'maleShowerScenes': maleShowerScenes,
-        'femaleShowerScenes': femaleShowerScenes
+        [maleBathTubScenesString]: maleBathTubScenes,
+        [femaleBathTubScenesString]: femaleBathTubScenes,
+        [maleShowerScenesString]: maleShowerScenes,
+        [femaleShowerScenesString]: femaleShowerScenes
       });
     }
 
