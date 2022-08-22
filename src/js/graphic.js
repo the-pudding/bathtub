@@ -392,6 +392,12 @@ function initializeBigSampleLinechart() {
   // Load big sample data.
   let dataObject = {};
 
+  const maleBathTubScenesString = 'maleBathTubScenes';
+  const femaleBathTubScenesString = 'femaleBathTubScenes';
+  const maleShowerScenesString = 'maleShowerScenes';
+  const femaleShowerScenesString = 'femaleShowerScenes';
+  const scenesStringsList = [maleBathTubScenesString, femaleBathTubScenesString, maleShowerScenesString, femaleShowerScenesString];
+
   loadData('big-sample.csv').then(films => {
     films.forEach((film) => {
       // Calculate number of male/female bathtub/shower scenes for each year.
@@ -407,37 +413,29 @@ function initializeBigSampleLinechart() {
       }
 
       // If male/female bathtub/shower scenes are empty, initialize them.
-      if (!dataObject[year]['maleBathTubScenes']) {
-        dataObject[year]['maleBathTubScenes'] = 0;
-      }
+      for (let i in scenesStringsList) {
+        let sceneString = scenesStringsList[i];
 
-      if (!dataObject[year]['femaleBathTubScenes']) {
-        dataObject[year]['femaleBathTubScenes'] = 0;
-      }
-
-      if (!dataObject[year]['maleShowerScenes']) {
-        dataObject[year]['maleShowerScenes'] = 0;
-      }
-
-      if (!dataObject[year]['femaleShowerScenes']) {
-        dataObject[year]['femaleShowerScenes'] = 0;
+        if (!dataObject[year][sceneString]) {
+          dataObject[year][sceneString] = 0;
+        }
       }
 
       // Sum up male/female bathtub/shower scenes.
       if (hasMaleBathTubScene) {
-        dataObject[year]['maleBathTubScenes']++;
+        dataObject[year][maleBathTubScenesString]++;
       }
 
       if (hasFemaleBathTubScene) {
-        dataObject[year]['femaleBathTubScenes']++;
+        dataObject[year][femaleBathTubScenesString]++;
       }
 
       if (hasMaleShowerScene) {
-        dataObject[year]['maleShowerScenes']++;
+        dataObject[year][maleShowerScenesString]++;
       }
 
       if (hasFemaleShowerScene) {
-        dataObject[year]['femaleShowerScenes']++;
+        dataObject[year][femaleShowerScenesString]++;
       }
     });
 
@@ -446,10 +444,10 @@ function initializeBigSampleLinechart() {
     let maxScenes = 0;
 
     for (let year in dataObject) {
-      let maleBathTubScenes = dataObject[year]['maleBathTubScenes'];
-      let femaleBathTubScenes = dataObject[year]['femaleBathTubScenes'];
-      let maleShowerScenes = dataObject[year]['maleShowerScenes'];
-      let femaleShowerScenes = dataObject[year]['femaleShowerScenes'];
+      let maleBathTubScenes = dataObject[year][maleBathTubScenesString];
+      let femaleBathTubScenes = dataObject[year][femaleBathTubScenesString];
+      let maleShowerScenes = dataObject[year][maleShowerScenesString];
+      let femaleShowerScenes = dataObject[year][femaleShowerScenesString];
 
       // Update maximum number of scenes total.
       let maxScenesInYear = maxInArray([maleBathTubScenes, femaleBathTubScenes, maleShowerScenes, femaleShowerScenes]);
@@ -488,7 +486,7 @@ function initializeBigSampleLinechart() {
     let y = d3.scaleLinear()
               .domain(d3.extent(dataset.map((filmYear) => {
                 // Calculate maximum number of scenes of any scene type.
-                return maxInArray([filmYear['maleBathTubScenes'], filmYear['femaleBathTubScenes'], filmYear['maleShowerScenes'], filmYear['femaleShowerScenes']]);
+                return maxInArray([filmYear[maleBathTubScenesString], filmYear[femaleBathTubScenesString], filmYear[maleShowerScenesString], filmYear[femaleShowerScenesString]]);
               })))
               .range([height, 0]);
 
@@ -499,11 +497,10 @@ function initializeBigSampleLinechart() {
             .tickFormat(d3.format('d')));
 
     // Create male/female bathtub/shower scene lines.
-    let sceneTypes = ['maleBathTubScenes', 'femaleBathTubScenes', 'maleShowerScenes', 'femaleShowerScenes'];
     let sceneTypeLineColors = ['red', 'green', 'blue', 'orange'];
 
-    for (let i in sceneTypes) {
-      let sceneType = sceneTypes[i];
+    for (let i in scenesStringsList) {
+      let sceneType = scenesStringsList[i];
 
       svg.append('path')
          .datum(dataset)
