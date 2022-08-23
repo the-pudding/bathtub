@@ -126,7 +126,7 @@ function initializeBestActressBarchart() {
     // Initialize color palette for subgroups.
     let color = d3.scaleOrdinal()
                          .domain(subgroups)
-                         .range(['#e41a1c','#377eb8']);
+                         .range(['#1f77b4','#ff7f0e']);
 
     let filtered = [];
 
@@ -507,7 +507,7 @@ function initializeBigSampleLinechart() {
                .tickFormat(d3.format('d')));
 
     // Create male/female bathtub/shower scene lines.
-    let sceneTypeLineColors = ['red', 'green', 'blue', 'orange'];
+    let sceneTypeLineColors = ['#4e79a7','#f28e2c','#e15759','#76b7b2'];
 
     renderLines(scenesStringsList);
 
