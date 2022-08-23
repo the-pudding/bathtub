@@ -201,6 +201,7 @@ function initializeBestActressBarchart() {
 
     // Initialize legend for best actress barchart.
     let legend = svg.append('g')
+                    .attr('class', 'legend')
                     .attr('text-anchor', 'end')
                     .selectAll('g')
                     .data(subgroups)
@@ -208,6 +209,9 @@ function initializeBestActressBarchart() {
                     .append('g')
                     .attr('transform', (d, i) => {
                       return `translate(0, ${i * 20})`;
+                    })
+                    .on('click', (d, i) => {
+                      updateLegend(i);
                     });
 
     // Add color rectangles to legend for best actress barchart.
@@ -513,6 +517,7 @@ function initializeBigSampleLinechart() {
                                   .range(sceneTypeLineColors);
 
     let legend = svg.append('g')
+                    .attr('class', 'legend')
                     .attr('text-anchor', 'end')
                     .selectAll('g')
                     .data(scenesStringsList)
