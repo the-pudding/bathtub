@@ -379,7 +379,7 @@ function initializeBigSampleLinechart() {
   }
   const width = 1100 - margin.left - margin.right;
   const height = 500 - margin.top - margin.bottom;
-  const strokeWidth = 1.5;
+  const strokeWidth = 2;
 
   // Initialize big sample line chart.
   let svg = d3.select(chartName)
