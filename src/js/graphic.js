@@ -397,6 +397,12 @@ function initializeBigSampleLinechart() {
   const maleShowerScenesString = 'maleShowerScenes';
   const femaleShowerScenesString = 'femaleShowerScenes';
   const scenesStringsList = [maleBathTubScenesString, femaleBathTubScenesString, maleShowerScenesString, femaleShowerScenesString];
+  const sceneTypes = {
+    [maleBathTubScenesString]: 'Male Bathtub Scenes',
+    [femaleBathTubScenesString]: 'Female Bathtub Scenes',
+    [maleShowerScenesString]: 'Male Shower Scenes',
+    [femaleShowerScenesString]: 'Female Shower Scenes'
+  }
 
   loadData('big-sample.csv').then(films => {
     films.forEach((film) => {
@@ -492,30 +498,140 @@ function initializeBigSampleLinechart() {
 
     // Initialize y-axis.
     svg.append('g')
-    .call(d3.axisLeft(y)
-            .ticks(maxScenes)
-            .tickFormat(d3.format('d')));
+       .call(d3.axisLeft(y)
+               .ticks(maxScenes)
+               .tickFormat(d3.format('d')));
 
     // Create male/female bathtub/shower scene lines.
     let sceneTypeLineColors = ['red', 'green', 'blue', 'orange'];
 
-    for (let i in scenesStringsList) {
-      let sceneType = scenesStringsList[i];
+    renderLines(scenesStringsList);
 
-      svg.append('path')
-         .datum(dataset)
-         .attr('fill', 'none')
-         .attr('stroke', () => {
-           return sceneTypeLineColors[i];
-         })
-         .attr('stroke-width', strokeWidth)
-         .attr('d', d3.line()
-         .x((d) => {
-           return x(d['year'])
-         })
-         .y((d) => {
-           return y(d[sceneType])
-         }));
+    // Initialize legend for big sample linechart.
+    let sceneTypeLegendColors = d3.scaleOrdinal()
+                                  .domain(scenesStringsList)
+                                  .range(sceneTypeLineColors);
+
+    let legend = svg.append('g')
+                    .attr('text-anchor', 'end')
+                    .selectAll('g')
+                    .data(scenesStringsList)
+                    .enter()
+                    .append('g')
+                    .attr('transform', (d, i) => {
+                      return `translate(0, ${i * 20})`;
+                    })
+                    .on('click', (d, i) => {
+                      updateLegend(i);
+                    });
+
+    // Add color rectangles to legend for big sample linechart.
+    legend.append('rect')
+          .attr('x', width - 17)
+          .attr('width', 15)
+          .attr('height', 15)
+          .attr('fill', sceneTypeLegendColors)
+          .attr('stroke', sceneTypeLegendColors)
+          .attr('stroke-width', 2)
+
+    // Add group names to legend for big sample linechart.
+    legend.append('text')
+          .attr('x', width - 24)
+          .attr('y', 9.5)
+          .attr('dy', '0.32em')
+          .text((d) => {
+            return sceneTypes[d];
+          });
+
+    let filtered = [];
+
+    function updateLegend(group) {
+      // Add clicked group to groups removed.
+      if (filtered.indexOf(group) == -1) {
+        filtered.push(group);
+
+        // If all groups are unchecked, then reset.
+        if (filtered.length == scenesStringsList.length) {
+          filtered = [];
+        }
+      }
+      // Otherwise, display it.
+      else {
+        filtered.splice(filtered.indexOf(group), 1);
+      }
+
+      // Update x-scales for each filtered item.
+      let newSubgroups = [];
+
+      scenesStringsList.forEach((g) => {
+        if (filtered.indexOf(g) == -1) {
+          newSubgroups.push(g);
+        }
+      });
+
+      // Hide filtered lines.
+      for (let i in filtered) {
+        let sceneType = filtered[i];
+
+        // Hide filtered lines.
+        svg.selectAll(`path.line-${sceneType}`)
+           .transition()
+           .duration(100)
+           .style('opacity', 0);
+      }
+
+      // Show non-filtered lines.
+      for (let i in newSubgroups) {
+        let sceneType = newSubgroups[i];
+
+        // Hide filtered lines.
+        svg.selectAll(`path.line-${sceneType}`)
+           .transition()
+           .duration(100)
+           .style('opacity', 1);
+      }
+
+      // Update legend.
+      legend.selectAll('rect')
+            .transition()
+            .attr('fill', (d) => {
+              if (filtered.length) {
+                if (filtered.indexOf(d) == -1) {
+                  return sceneTypeLegendColors(d);
+                }
+                else {
+                  return 'white';
+                }
+              }
+              else {
+                return sceneTypeLegendColors(d);
+              }
+            })
+            .duration(100);
+    }
+
+    function renderLines(scenes) {
+      for (let i in scenes) {
+        let sceneType = scenes[i];
+
+        svg.append('path')
+           .datum(dataset)
+           .transition()
+           .attr('class', `line-${sceneType}`)
+           .attr('fill', 'none')
+           .attr('stroke', () => {
+             return sceneTypeLineColors[i];
+           })
+           .attr('stroke-width', strokeWidth)
+           .attr('d', d3.line()
+           .x((d) => {
+             return x(d['year'])
+           })
+           .y((d) => {
+             return y(d[sceneType])
+           }))
+           .duration(100);
+      }
     }
   });
 }
