@@ -511,6 +511,24 @@ function initializeBigSampleLinechart() {
 
     renderLines(scenesStringsList);
 
+    // Initialize x-axis label for big sample linechart.
+    svg.append('text')
+       .attr('class', 'x label')
+       .attr('text-anchor', 'middle')
+       .attr('x', width / 2)
+       .attr('y', height + 60)
+       .text('Film Year');
+
+    // Initialize y-axis label for big sample linechart.
+    svg.append('text')
+       .attr('class', 'y label')
+       .attr('text-anchor', 'middle')
+       .attr('x', -height / 2)
+       .attr('y', -60)
+       .attr('dy', '.75em')
+       .attr('transform', 'rotate(-90)')
+       .text('Number of Scenes');
+
     // Initialize legend for big sample linechart.
     let sceneTypeLegendColors = d3.scaleOrdinal()
                                   .domain(scenesStringsList)
