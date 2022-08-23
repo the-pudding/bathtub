@@ -1,27 +1,54 @@
 import loadData from './load-data';
 
+const margin = {
+  top: 10,
+  right: 100,
+  bottom: 70,
+  left: 100
+};
+const width = 1100 - margin.left - margin.right;
+const height = 500 - margin.top - margin.bottom;
+
 // Checks length of data cell corresponding to bathtub or shower scene.
 function hasScene(entry) {
   return entry.length === 0 ? false : true
+}
+
+// Makes chart responsive.
+function makeResponsive(svg) {
+  // Measure SVG container dimensions and calculate aspect ratio.
+  const container = d3.select(svg.node().parentNode);
+  const width = parseInt(svg.style('width'), 10);
+  const height = parseInt(svg.style('height'), 10);
+  const aspect = width / height;
+
+  // Set viewBox attribute to size of container and control scaling with preserveAspectRatio.
+  // Then, resize.
+  svg.attr('viewBox', `0 0 ${width} ${height}`)
+     .attr('preserveAspectRatio', 'xMinYMid')
+     .call(resize);
+
+  // Resize chart when window resizes.
+  d3.select(window).on(`resize.${container.attr('id')}`, resize);
+
+  // Resize SVG to fill container.
+  function resize() {
+    const w = parseInt(container.style('width'));
+
+    svg.attr('width', w);
+    svg.attr('height', Math.round(w / aspect));
+  }
 }
 
 function initializeBestActressBarchart() {
   const toolTipMargin = 10;
   const chartName = '#best_actress_bar_chart';
 
-  let margin = {
-    top: 10,
-    right: 30,
-    bottom: 70,
-    left: 60
-  },
-  width = 1100 - margin.left - margin.right,
-  height = 500 - margin.top - margin.bottom;
-
   let svg = d3.select(chartName)
               .append('svg')
               .attr('width', width + margin.left + margin.right)
               .attr('height', height + margin.top + margin.bottom)
+              .call(makeResponsive)
               .append('g')
               .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
@@ -375,14 +402,6 @@ function initializeBigSampleLinechart() {
 
   // Initialize constants.
   const chartName = '#big_sample_line_chart';
-  const margin = {
-    top: 10,
-    right: 30,
-    bottom: 70,
-    left: 60
-  }
-  const width = 1100 - margin.left - margin.right;
-  const height = 500 - margin.top - margin.bottom;
   const strokeWidth = 2;
 
   // Initialize big sample line chart.
@@ -390,6 +409,7 @@ function initializeBigSampleLinechart() {
               .append('svg')
               .attr('width', width + margin.left + margin.right)
               .attr('height', height + margin.top + margin.bottom)
+              .call(makeResponsive)
               .append('g')
               .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
