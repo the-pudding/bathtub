@@ -372,7 +372,13 @@ function initializeBestActressBarchart() {
         let filmNameClean = filmName.replace('/', '_');
 
         html += `<li>${scene['actress']}, <i>${filmName}</i></li>`;
-        html += `<img src="assets/images/bathtub-images/${filmNameClean}.jpeg">`
+
+        // Add image only if it exists.
+        let url = `assets/images/bathtub-images/${filmNameClean}.jpeg`;
+
+        if (imageExists(url)) {
+          html += `<img src="${url}">`;
+        }
       }
 
       html += '</ul>';
@@ -391,6 +397,16 @@ function initializeBestActressBarchart() {
       }
 
       return margin + mousePosition + 'px';
+    }
+
+    // Checks if image exists.
+    function imageExists(url) {
+      let http = new XMLHttpRequest();
+
+      http.open('HEAD', url, false);
+      http.send();
+
+      return http.status != 404;
     }
   });
 }
